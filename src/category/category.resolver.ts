@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Category } from "./category.entity";
+import { CategoryMapper } from "./category.mapper";
 import { CategoryService } from "./category.service";
 import { CategoryPublic } from "./dto/category";
 import { CategoryCreateInput } from "./dto/category-create.input";
@@ -16,11 +16,8 @@ export class CategoryResolver {
 
     @Mutation(returns => CategoryPublic, { name: 'createCategory' })
     async createCategory(
-        @Args('input') input: CategoryCreateInput
-    ): Promise<CategoryPublic> {
-        const categoryEntity = new Category()
-        categoryEntity.name = input.name
-        categoryEntity.slug = input.slug
-        return await this.categoryService.create(categoryEntity);
+        @Args('input') input: CategoryCreateInput): Promise<CategoryPublic> {
+        
+        return await this.categoryService.create(CategoryMapper.toEntity(input));
     }
 }
